@@ -23,6 +23,6 @@ class RandomWalkScribe(TerminalScribe):
         self.direction = [self.direction[0] * reflection[0], self.direction[1] * reflection[1]]
 
     def forward(self, distance=1):
-        for i in range(distance):
+        for _ in range(distance):
             self.randomizeDegrees()
             super().forward()

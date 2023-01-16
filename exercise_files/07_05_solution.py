@@ -8,7 +8,7 @@ class Canvas:
     def __init__(self, width, height):
         self._x = width
         self._y = height
-        self._canvas = [[' ' for y in range(self._y)] for x in range(self._x)]
+        self._canvas = [[' ' for _ in range(self._y)] for _ in range(self._x)]
 
     def hitsVerticalWall(self, point):
         return round(point[0]) < 0 or round(point[0]) >= self._x
@@ -39,9 +39,7 @@ class CanvasAxis(Canvas):
     def formatAxisNumber(self, num):
         if num % 5 != 0:
             return '  '
-        if num < 10:
-            return ' '+str(num)
-        return str(num)
+        return f' {str(num)}' if num < 10 else str(num)
 
     def print(self):
         self.clear()
@@ -72,7 +70,7 @@ class TerminalScribe:
         self.direction = [self.direction[0] * reflection[0], self.direction[1] * reflection[1]]
 
     def forward(self, distance):
-        for i in range(distance):
+        for _ in range(distance):
             pos = [self.pos[0] + self.direction[0], self.pos[1] + self.direction[1]]
             if self.canvas.hitsWall(pos):
                 self.bounce(pos)
@@ -134,7 +132,7 @@ class RandomWalkScribe(TerminalScribe):
         self.direction = [self.direction[0] * reflection[0], self.direction[1] * reflection[1]]
 
     def forward(self, distance):
-        for i in range(distance):
+        for _ in range(distance):
             self.randomizeDegreeOrientation()
             super().forward(1)
 

@@ -10,7 +10,7 @@ class Canvas:
         self._y = height
         # This is a grid that contains data about where the 
         # TerminalScribes have visited
-        self._canvas = [[' ' for y in range(self._y)] for x in range(self._x)]
+        self._canvas = [[' ' for _ in range(self._y)] for _ in range(self._x)]
 
     # Returns True if the given point is outside the boundaries of the Canvas
     def hitsWall(self, point):

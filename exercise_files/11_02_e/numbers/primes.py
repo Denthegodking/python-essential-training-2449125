@@ -1,10 +1,7 @@
 
 def isPrime(n, foundPrimes=None):
     foundPrimes = range(2, int(n**0.5)) if foundPrimes is None else foundPrimes
-    for factor in foundPrimes:
-        if n % factor == 0:
-            return False
-    return True
+    return all(n % factor != 0 for factor in foundPrimes)
 
 def listPrimes(max):
     foundPrimes = []

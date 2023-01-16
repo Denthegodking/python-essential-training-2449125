@@ -13,15 +13,15 @@ class PlotScribe(TerminalScribe):
         data['domain'] = self.domain
         return data
 
-    def fromDict(data, g):
-        scribe = g[data.get('classname')](
-            color=data.get('color'),
-            mark=data.get('mark'),
-            trail=data.get('trail'),
-            pos=data.get('pos'),
-            domain=data.get('domain'),
+    def fromDict(self, g):
+        scribe = g[self.get('classname')](
+            color=self.get('color'),
+            mark=self.get('mark'),
+            trail=self.get('trail'),
+            pos=self.get('pos'),
+            domain=self.get('domain'),
         )
-        scribe.x = data.get('x')
+        scribe.x = self.get('x')
         return scribe
 
     def _plotX(self, function, canvas):
@@ -32,5 +32,5 @@ class PlotScribe(TerminalScribe):
 
     def plotX(self, function):
         self.x = self.domain[0]
-        for x in range(self.domain[0], self.domain[1]):
+        for _ in range(self.domain[0], self.domain[1]):
             self.moves.append((self._plotX, [function]))

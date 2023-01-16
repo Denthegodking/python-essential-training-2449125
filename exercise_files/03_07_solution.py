@@ -8,7 +8,7 @@ class Canvas:
     def __init__(self, width, height):
         self._x = width
         self._y = height
-        self._canvas = [[' ' for y in range(self._y)] for x in range(self._x)]
+        self._canvas = [[' ' for _ in range(self._y)] for _ in range(self._x)]
 
     def hitsWall(self, point):
         return round(point[0]) < 0 or round(point[0]) >= self._x or round(point[1]) < 0 or round(point[1]) >= self._y
@@ -60,13 +60,13 @@ class TerminalScribe:
             self.draw(pos)
 
     def drawSquare(self, size):
-        for i in range(size):
+        for _ in range(size):
             self.right()
-        for i in range(size):
+        for _ in range(size):
             self.down()
-        for i in range(size):
+        for _ in range(size):
             self.left()
-        for i in range(size):
+        for _ in range(size):
             self.up()
 
     def draw(self, pos):
@@ -79,6 +79,6 @@ class TerminalScribe:
 canvas = Canvas(30, 30)
 scribe = TerminalScribe(canvas)
 scribe.setDegrees(135)
-for i in range(30):
+for _ in range(30):
     scribe.forward()
 

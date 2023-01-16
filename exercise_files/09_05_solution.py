@@ -17,7 +17,7 @@ class Canvas:
     def __init__(self, width, height, scribes=[], framerate=.05):
         self._x = width
         self._y = height
-        self._canvas = [[' ' for y in range(self._y)] for x in range(self._x)]
+        self._canvas = [[' ' for _ in range(self._y)] for _ in range(self._x)]
         self.scribes = scribes
         self.framerate = framerate
 
@@ -43,7 +43,7 @@ class Canvas:
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def go(self):
-        max_moves = max([len(scribe.moves) for scribe in self.scribes])
+        max_moves = max(len(scribe.moves) for scribe in self.scribes)
         for i in range(max_moves):
             for scribe in self.scribes:
                 threads = []
@@ -65,9 +65,7 @@ class CanvasAxis(Canvas):
     def formatAxisNumber(self, num):
         if num % 5 != 0:
             return '  '
-        if num < 10:
-            return ' '+str(num)
-        return str(num)
+        return f' {str(num)}' if num < 10 else str(num)
 
     def print(self):
         self.clear()
@@ -214,7 +212,7 @@ class RandomWalkScribe(TerminalScribe):
         self.direction = [self.direction[0] * reflection[0], self.direction[1] * reflection[1]]
 
     def forward(self, distance=1):
-        for i in range(distance):
+        for _ in range(distance):
             self.randomizeDegrees()
             super().forward()
 
