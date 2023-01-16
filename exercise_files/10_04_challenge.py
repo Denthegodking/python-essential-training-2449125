@@ -28,7 +28,7 @@ class Canvas:
         if not is_number(height):
             raise InvalidParameter('Height must be a number')
         self._y = height
-        self._canvas = [[' ' for y in range(self._y)] for x in range(self._x)]
+        self._canvas = [[' ' for _ in range(self._y)] for _ in range(self._x)]
         self.scribes = scribes
 
         if not is_number(framerate):
@@ -44,9 +44,16 @@ class Canvas:
             'scribes': [scribe.toDict() for scribe in self.scribes]
         }
 
-    def fromDict(data):
-        canvas = globals()[data.get('classname')](data.get('x'), data.get('y'), scribes=[globals()[scribe.get('classname')].fromDict(scribe) for scribe in data.get('scribes')])
-        canvas._canvas = data.get('canvas')
+    def fromDict(self):
+        canvas = globals()[self.get('classname')](
+            self.get('x'),
+            self.get('y'),
+            scribes=[
+                globals()[scribe.get('classname')].fromDict(scribe)
+                for scribe in data.get('scribes')
+            ],
+        )
+        canvas._canvas = self.get('canvas')
         return canvas
 
     def hitsVerticalWall(self, point):
@@ -71,7 +78,7 @@ class Canvas:
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def go(self):
-        max_moves = max([len(scribe.moves) for scribe in self.scribes])
+        max_moves = max(len(scribe.moves) for scribe in self.scribes)
         for i in range(max_moves):
             for scribe in self.scribes:
                 threads = []
@@ -93,9 +100,7 @@ class CanvasAxis(Canvas):
     def formatAxisNumber(self, num):
         if num % 5 != 0:
             return '  '
-        if num < 10:
-            return ' '+str(num)
-        return str(num)
+        return f' {str(num)}' if num < 10 else str(num)
 
     def print(self):
         self.clear()
@@ -138,18 +143,18 @@ class TerminalScribe:
             'moves': [[move[0].__name__, move[1]] for move in self.moves]
         }
 
-    def fromDict(data):
-        scribe = globals()[data.get('classname')](
-            color=data.get('color'),
-            mark=data.get('mark'),
-            trail=data.get('trail'),
-            pos=data.get('pos'),
-            )
-        scribe.moves = scribe._movesFromDict(data.get('moves'))
+    def fromDict(self):
+        scribe = globals()[self.get('classname')](
+            color=self.get('color'),
+            mark=self.get('mark'),
+            trail=self.get('trail'),
+            pos=self.get('pos'),
+        )
+        scribe.moves = scribe._movesFromDict(self.get('moves'))
         return scribe
 
     def _movesFromDict(self, movesData):
-        bound_methods = {key: val for key, val in getmembers(self, predicate=ismethod)}
+        bound_methods = dict(getmembers(self, predicate=ismethod))
         return [[bound_methods[name], args] for name, args in movesData]
 
     def _setPosition(self, pos, _):
@@ -186,7 +191,7 @@ class TerminalScribe:
         self.draw(pos, canvas)
 
     def forward(self, distance=1):
-        for i in range(distance):
+        for _ in range(distance):
             self.moves.append((self._forward, []))
 
     def draw(self, pos, canvas):
@@ -207,15 +212,15 @@ class PlotScribe(TerminalScribe):
         data['domain'] = self.domain
         return data
 
-    def fromDict(data):
-        scribe = globals()[data.get('classname')](
-            color=data.get('color'),
-            mark=data.get('mark'),
-            trail=data.get('trail'),
-            pos=data.get('pos'),
-            domain=data.get('domain'),
+    def fromDict(self):
+        scribe = globals()[self.get('classname')](
+            color=self.get('color'),
+            mark=self.get('mark'),
+            trail=self.get('trail'),
+            pos=self.get('pos'),
+            domain=self.get('domain'),
         )
-        scribe.x = data.get('x')
+        scribe.x = self.get('x')
         return scribe
 
     def _plotX(self, function, canvas):
@@ -226,7 +231,7 @@ class PlotScribe(TerminalScribe):
 
     def plotX(self, function):
         self.x = self.domain[0]
-        for x in range(self.domain[0], self.domain[1]):
+        for _ in range(self.domain[0], self.domain[1]):
             self.moves.append((self._plotX, [function]))
 
 class RobotScribe(TerminalScribe):
@@ -274,7 +279,7 @@ class RandomWalkScribe(TerminalScribe):
         self.direction = [self.direction[0] * reflection[0], self.direction[1] * reflection[1]]
 
     def forward(self, distance=1):
-        for i in range(distance):
+        for _ in range(distance):
             self.randomizeDegrees()
             super().forward()
 

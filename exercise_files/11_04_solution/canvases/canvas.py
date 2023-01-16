@@ -14,7 +14,7 @@ class Canvas:
         if not is_number(height):
             raise InvalidParameter('Height must be a number')
         self._y = height
-        self._canvas = [[' ' for y in range(self._y)] for x in range(self._x)]
+        self._canvas = [[' ' for _ in range(self._y)] for _ in range(self._x)]
         self.scribes = scribes
 
         if not is_number(framerate):
@@ -30,21 +30,28 @@ class Canvas:
             'scribes': [scribe.toDict() for scribe in self.scribes]
         }
 
-    def fromDict(data, g):
-        canvas = g[data.get('classname')](data.get('x'), data.get('y'), scribes=[g[scribe.get('classname')].fromDict(scribe, g) for scribe in data.get('scribes')])
-        canvas._canvas = data.get('canvas')
+    def fromDict(self, g):
+        canvas = g[self.get('classname')](
+            self.get('x'),
+            self.get('y'),
+            scribes=[
+                g[scribe.get('classname')].fromDict(scribe, g)
+                for scribe in data.get('scribes')
+            ],
+        )
+        canvas._canvas = self.get('canvas')
         return canvas
 
     def toFile(self, name):
-        with open(name+'.json', 'w') as f:
+        with open(f'{name}.json', 'w') as f:
             f.write(json.dumps(self.toDict()))
 
-    def fromFile(name, g):
-        with open(name+'.json', 'r') as f:
+    def fromFile(self, g):
+        with open(f'{self}.json', 'r') as f:
             try:
                 return Canvas.fromDict(json.loads(f.readline()), g)
             except:
-                raise TerminalScribeException('File {}.json is not a valid Scribe file'.format(name))
+                raise TerminalScribeException(f'File {self}.json is not a valid Scribe file')
 
     def hitsVerticalWall(self, point):
         return round(point[0]) < 0 or round(point[0]) >= self._x
@@ -68,7 +75,7 @@ class Canvas:
         os.system('cls' if os.name == 'nt' else 'clear')
 
     def go(self):
-        max_moves = max([len(scribe.moves) for scribe in self.scribes])
+        max_moves = max(len(scribe.moves) for scribe in self.scribes)
         for i in range(max_moves):
             for scribe in self.scribes:
                 threads = []

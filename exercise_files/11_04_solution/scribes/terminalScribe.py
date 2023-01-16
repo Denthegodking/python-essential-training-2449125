@@ -40,18 +40,18 @@ class TerminalScribe:
             'moves': [[move[0].__name__, move[1]] for move in self.moves]
         }
 
-    def fromDict(data, g):
-        scribe = g[data.get('classname')](
-            color=data.get('color'),
-            mark=data.get('mark'),
-            trail=data.get('trail'),
-            pos=data.get('pos'),
-            )
-        scribe.moves = scribe._movesFromDict(data.get('moves'))
+    def fromDict(self, g):
+        scribe = g[self.get('classname')](
+            color=self.get('color'),
+            mark=self.get('mark'),
+            trail=self.get('trail'),
+            pos=self.get('pos'),
+        )
+        scribe.moves = scribe._movesFromDict(self.get('moves'))
         return scribe
 
     def _movesFromDict(self, movesData):
-        bound_methods = {key: val for key, val in getmembers(self, predicate=ismethod)}
+        bound_methods = dict(getmembers(self, predicate=ismethod))
         return [[bound_methods[name], args] for name, args in movesData]
 
     def _setPosition(self, pos, _):
@@ -88,7 +88,7 @@ class TerminalScribe:
         self.draw(pos, canvas)
 
     def forward(self, distance=1):
-        for i in range(distance):
+        for _ in range(distance):
             self.moves.append((self._forward, []))
 
     def draw(self, pos, canvas):

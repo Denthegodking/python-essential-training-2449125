@@ -5,9 +5,7 @@ class CanvasAxis(Canvas):
     def formatAxisNumber(self, num):
         if num % 5 != 0:
             return '  '
-        if num < 10:
-            return ' '+str(num)
-        return str(num)
+        return f' {str(num)}' if num < 10 else str(num)
 
     def print(self):
         self.clear()
